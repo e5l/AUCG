@@ -1,0 +1,49 @@
+#version 400
+
+in vec4 gl_FragCoord;
+
+out vec4 color;
+
+int width = 1024;
+int height = 768;
+
+uniform int max_iterations;
+uniform vec2 horizontal;
+uniform vec2 vertical;
+
+vec2 getPosition() {
+    vec2 scale = vec2(gl_FragCoord[0] / width,
+        gl_FragCoord[1] / height);
+
+    vec2 position = vec2(
+        horizontal.x + (horizontal.y - horizontal.x) * scale.x,
+        vertical.x + (vertical.y - vertical.x) * scale.y);
+
+    return position;
+}
+
+int itersCount(vec2 position, int max_iterations) {
+    int i = 0;
+    vec2 z = vec2(0.0, 0.0);
+
+    while (i < max_iterations) {
+        i++;
+        z = vec2(z.x * z.x - z.y * z.y, 2 * z.x * z.y) + position;
+
+        if (z.x * z.x + z.y * z.y > 2) {
+            break;
+        }
+    }
+
+    return i;
+}
+
+void main()
+{
+    vec2 position = getPosition();
+    int iters = itersCount(position, max_iterations);
+
+    float red = (iters / max_iterations);
+
+    color = vec4(red, 0.0, 0.0, 1.0);
+}
