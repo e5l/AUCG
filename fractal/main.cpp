@@ -8,6 +8,12 @@
 
 DrawContext *context;
 
+struct {
+    bool pressed = false;
+    double x = 0;
+    double y = 0;
+} mouse;
+
 void printGlInfo() {
     using namespace std;
     printf("Renderer: %s\nVersion: %s\n",
@@ -30,30 +36,42 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
                 return static_cast<int32_t>(old) - 10;
             });
             break;
-        case GLFW_KEY_UP:
-            context->up();
-            break;
-        case GLFW_KEY_DOWN:
-            context->down();
-            break;
-        case GLFW_KEY_LEFT:
-            context->left();
-            break;
-        case GLFW_KEY_RIGHT:
-            context->right();
-            break;
-        case GLFW_KEY_Z:
-            context->zoomIn();
-            break;
-        case GLFW_KEY_X:
-            context->zoomOut();
         default:
             break;
     }
 }
 
-int main() {
+void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
+    if (button != GLFW_MOUSE_BUTTON_LEFT) {
+        return;
+    }
 
+    if (action == GLFW_PRESS) {
+        mouse.pressed = true;
+        return;
+    }
+
+    mouse.pressed = false;
+}
+
+void mouseMoveCallback(GLFWwindow *window, double x, double y) {
+    if (mouse.pressed) {
+        context->move(x - mouse.x, y - mouse.y);
+    }
+
+    mouse.x = x;
+    mouse.y = y;
+}
+
+void mouseScrollCallback(GLFWwindow* window, double x, double y) {
+    if (y > 0) {
+        context->zoomIn(mouse.x, mouse.y);
+    } else {
+        context->zoomOut(mouse.x, mouse.y);
+    }
+}
+
+int main() {
     if (!glfwInit()) {
         return 1;
     }
@@ -73,6 +91,9 @@ int main() {
 
     context = new DrawContext();
     glfwSetKeyCallback(window, keyCallback);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetCursorPosCallback(window, mouseMoveCallback);
+    glfwSetScrollCallback(window, mouseScrollCallback);
 
     do {
         context->drawFrame();

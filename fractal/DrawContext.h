@@ -15,12 +15,10 @@ struct DrawContext {
         max_iterations = updater(max_iterations);
     }
 
-    void zoomIn();
-    void zoomOut();
-    void left();
-    void right();
-    void up();
-    void down();
+    void zoomIn(double x, double y);
+    void zoomOut(double x, double y);
+
+    void move(double x, double y);
 
 private:
     const char* VERTEX_SHADER_PATH = "shaders/simple.vertexshader";
@@ -39,6 +37,9 @@ private:
     GLfloat horizontal[2] = {-2.0f, 2.0f};
     GLfloat vertical[2] = {-2.0f, 2.0f};
 
-    float step = 0.5;
+    float step = 0.005;
     float ratio = 0.9;
+
+    const uint32_t width = 1024;
+    const uint32_t height = 768;
 };

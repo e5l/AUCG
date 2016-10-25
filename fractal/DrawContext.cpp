@@ -51,55 +51,43 @@ void DrawContext::drawFrame() {
     glDisableVertexAttribArray(0);
 }
 
-void DrawContext::zoomIn() {
-    float hsize = (horizontal[1] - horizontal[0]) / 2;
-    float vsize = (vertical[1] - vertical[0]) / 2;
+void DrawContext::zoomIn(double x, double y) {
+    float hsize = (horizontal[1] - horizontal[0]);
+    float vsize = (vertical[1] - vertical[0]);
 
-    float hc = (horizontal[1] + horizontal[0]) / 2;
-    float vc = (vertical[1] + vertical[0]) / 2;
+    float mouse_ratio_x = static_cast<float>(x / width),
+          mouse_ratio_y = 1.0f - static_cast<float>(y / height);
 
-    horizontal[0] = (hc - hsize * ratio);
-    horizontal[1] = (hc + hsize * ratio);
+    horizontal[0] += mouse_ratio_x * hsize * (1 - ratio);
+    horizontal[1] = horizontal[0] + ratio * hsize;
 
-    vertical[0] = (vc - vsize * ratio);
-    vertical[1] = (vc + vsize * ratio);
+    vertical[0] += mouse_ratio_y * vsize * (1 - ratio);
+    vertical[1] = vertical[0] + ratio * vsize;
 
     step *= ratio;
 }
 
-void DrawContext::zoomOut() {
-    float hsize = (horizontal[1] - horizontal[0]) / 2;
-    float vsize = (vertical[1] - vertical[0]) / 2;
+void DrawContext::zoomOut(double x, double y) {
+    float hsize = (horizontal[1] - horizontal[0]);
+    float vsize = (vertical[1] - vertical[0]);
 
-    float hc = (horizontal[1] + horizontal[0]) / 2;
-    float vc = (vertical[1] + vertical[0]) / 2;
+    float mouse_ratio_x = static_cast<float>(x / width),
+          mouse_ratio_y = 1.0f - static_cast<float>(y / height);
 
-    float invratio = 2.0f - ratio;
-    horizontal[0] = (hc - hsize * invratio);
-    horizontal[1] = (hc + hsize * invratio);
+    horizontal[0] += mouse_ratio_x * hsize * (1 - 1 / ratio);
+    horizontal[1] = horizontal[0] + 1 / ratio * hsize;
 
-    vertical[0] = (vc - vsize * invratio);
-    vertical[1] = (vc + vsize * invratio);
+    vertical[0] += mouse_ratio_y * vsize * (1 - 1 / ratio);
+    vertical[1] = vertical[0] + 1 / ratio * vsize;
 
-    step *= invratio;
+
+    step /= ratio;
 }
 
-void DrawContext::left() {
-    horizontal[0] -= step;
-    horizontal[1] -= step;
-}
+void DrawContext::move(double x, double y) {
+    horizontal[0] -= step * x;
+    horizontal[1] -= step * x;
 
-void DrawContext::right() {
-    horizontal[0] += step;
-    horizontal[1] += step;
-}
-
-void DrawContext::up() {
-    vertical[0] += step;
-    vertical[1] += step;
-}
-
-void DrawContext::down() {
-    vertical[0] -= step;
-    vertical[1] -= step;
+    vertical[0] += step * y;
+    vertical[1] += step * y;
 }
