@@ -4,8 +4,8 @@ in vec4 gl_FragCoord;
 
 out vec4 color;
 
-int width = 1024;
-int height = 768;
+int width = 800;
+int height = 600;
 
 uniform int max_iterations;
 uniform vec2 horizontal;

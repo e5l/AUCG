@@ -77,7 +77,7 @@ int main() {
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    GLFWwindow *window = glfwCreateWindow(1024, 768, "Task 1. Fractal", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(800, 600, "Task 1. Fractal", nullptr, nullptr);
     if (!window) {
         return 1;
     }
